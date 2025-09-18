@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-  "postbuild": "cross-env-shell \"rm -rf site && mkdir -p site/_next/static && cp .next/server/app/index.html site/index.html && cp -r .next/static/* site/_next/static/ && cp -r public/* site/\"",
+    "postbuild": "cross-env-shell \"rm -rf site && mkdir -p site/_next/static && cp .next/server/app/index.html site/index.html && cp -r .next/static/* site/_next/static/ && cp -r public/* site/\"",
     "export": "next build",
     "dev": "next dev",
     "lint": "next lint",
@@ -69,6 +69,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8.5",
+    "shx": "^0.4.0",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
     "typescript": "^5"
