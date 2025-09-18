@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "postbuild": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Test-Path site) { Remove-Item -Recurse -Force site }; New-Item -ItemType Directory -Force site | Out-Null; New-Item -ItemType Directory -Force site\\_next\\static | Out-Null; Copy-Item -Path .next\\server\\app\\index.html -Destination site\\index.html -Force; Copy-Item -Path .next\\static\\* -Destination site\\_next\\static -Recurse -Force; Copy-Item -Path public\\* -Destination site -Recurse -Force\"",
+  "postbuild": "cross-env-shell \"rm -rf site && mkdir -p site/_next/static && cp .next/server/app/index.html site/index.html && cp -r .next/static/* site/_next/static/ && cp -r public/* site/\"",
     "export": "next build",
     "dev": "next dev",
     "lint": "next lint",
