@@ -1,0 +1,227 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated to dark purple space theme with neon pink accents */
+  --background: #0b0716; /* Nearly-black purple */
+  --foreground: #f8f7ff; /* Light text */
+  --card: #120a22; /* Surface color */
+  --card-foreground: #f8f7ff; /* Card text */
+  --popover: rgba(26, 15, 51, 0.95); /* Popover with blur */
+  --popover-foreground: #f8f7ff;
+  --primary: #ff2aaf; /* Neon pink accent */
+  --primary-foreground: #f8f7ff;
+  --secondary: #b9a9cc; /* Muted purple */
+  --secondary-foreground: #f8f7ff;
+  --muted: #b9a9cc;
+  --muted-foreground: #f8f7ff;
+  --accent: #ff2aaf; /* Neon pink accent */
+  --accent-foreground: #f8f7ff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: rgba(255, 255, 255, 0.08); /* Subtle borders */
+  --input: #120a22;
+  --ring: rgba(255, 42, 175, 0.35); /* Neon pink glow */
+  --chart-1: #ff2aaf;
+  --chart-2: #b84bff;
+  --chart-3: #7a33ff;
+  --chart-4: #b9a9cc;
+  --chart-5: #f8f7ff;
+  --radius: 1rem; /* Rounded corners xl */
+  --sidebar: #0b0716;
+  --sidebar-foreground: #f8f7ff;
+  --sidebar-primary: #120a22;
+  --sidebar-primary-foreground: #f8f7ff;
+  --sidebar-accent: #ff2aaf;
+  --sidebar-accent-foreground: #f8f7ff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(255, 42, 175, 0.35);
+
+  /* Added custom design tokens for space theme */
+  --bg-2: #120a22;
+  --bg-3: #1a0f33;
+  --accent-2: #b84bff; /* Electric violet */
+  --accent-3: #7a33ff;
+  --surface: rgba(18, 10, 34, 0.85); /* More opaque for better contrast */
+  --glow: 0 0 30px rgba(255, 42, 175, 0.35);
+}
+
+.dark {
+  --background: #0b0716;
+  --foreground: #f8f7ff;
+  --card: #120a22;
+  --card-foreground: #f8f7ff;
+  --popover: rgba(26, 15, 51, 0.95);
+  --popover-foreground: #f8f7ff;
+  --primary: #ff2aaf;
+  --primary-foreground: #f8f7ff;
+  --secondary: #b9a9cc;
+  --secondary-foreground: #f8f7ff;
+  --muted: #b9a9cc;
+  --muted-foreground: #f8f7ff;
+  --accent: #ff2aaf;
+  --accent-foreground: #f8f7ff;
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: #120a22;
+  --ring: rgba(255, 42, 175, 0.35);
+  --chart-1: #ff2aaf;
+  --chart-2: #b84bff;
+  --chart-3: #7a33ff;
+  --chart-4: #b9a9cc;
+  --chart-5: #f8f7ff;
+  --sidebar: #0b0716;
+  --sidebar-foreground: #f8f7ff;
+  --sidebar-primary: #120a22;
+  --sidebar-primary-foreground: #f8f7ff;
+  --sidebar-accent: #ff2aaf;
+  --sidebar-accent-foreground: #f8f7ff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(255, 42, 175, 0.35);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Added starry space background */
+    background-image: radial-gradient(2px 2px at 20px 30px, #ff2aaf, transparent),
+      radial-gradient(2px 2px at 40px 70px, #b84bff, transparent),
+      radial-gradient(1px 1px at 90px 40px, #7a33ff, transparent),
+      radial-gradient(1px 1px at 130px 80px, #ff2aaf, transparent),
+      radial-gradient(2px 2px at 160px 30px, #b84bff, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+  }
+
+  /* Added smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Updated glass effect with new surface color and backdrop blur */
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background: rgba(18, 10, 34, 0.85); /* More opaque purple background */
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--glow);
+  }
+
+  /* Added high contrast glass variant for navigation */
+  .glass-nav {
+    backdrop-filter: blur(12px);
+    background: rgba(11, 7, 22, 0.95); /* Very opaque for nav */
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 20px rgba(255, 42, 175, 0.2);
+  }
+
+  /* Enhanced glow effects for space theme */
+  .neon-glow {
+    box-shadow: 0 0 5px rgba(255, 42, 175, 0.5), 0 0 10px rgba(255, 42, 175, 0.3), 0 0 15px rgba(255, 42, 175, 0.2), 0 0
+      20px rgba(255, 42, 175, 0.1);
+  }
+
+  .electric-glow {
+    box-shadow: 0 0 5px rgba(184, 75, 255, 0.5), 0 0 10px rgba(184, 75, 255, 0.3), 0 0 15px rgba(184, 75, 255, 0.2);
+  }
+
+  /* Added sparkle animation keyframes */
+  @keyframes sparkle {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .sparkle {
+    animation: sparkle 2s infinite;
+  }
+
+  /* Added floating animation for space elements */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Animated background for hero (purple to fuchsia) */
+  .animated-hero-bg {
+    background: linear-gradient(60deg, #3b0a57, #a1066d, #3b0a57);
+    background-size: 200% 200%;
+    filter: saturate(1.1);
+  }
+
+  @keyframes bgMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Subtle glowing keyframe for buttons */
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0px rgba(255, 42, 175, 0.0), 0 0 0px rgba(255, 42, 175, 0.0); }
+    50% { box-shadow: 0 0 20px rgba(255, 42, 175, 0.35), 0 0 40px rgba(255, 42, 175, 0.25); }
+  }
+
+  /* Simple fade-in on scroll (requires adding 'reveal' class via JS if needed) */
+  .fade-in { opacity: 0; transform: translateY(6px); transition: opacity .6s ease, transform .6s ease; }
+  .fade-in.show { opacity: 1; transform: translateY(0); }
+}
