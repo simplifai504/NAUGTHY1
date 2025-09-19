@@ -1,11 +1,407 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=aspnet/Naughty-static.html" />
-    <title>Redirecting…</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="aspnet/Naughty-static.html">aspnet/Naughty-static.html</a>…</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Naughty Show — Static Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes gradientMove { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .glass { backdrop-filter: blur(12px); background: rgba(10, 6, 20, 0.55); border-color: rgba(236, 72, 153, 0.25); }
+    .neon-b { box-shadow: 0 0 24px rgba(236, 72, 153, 0.22), inset 0 0 18px rgba(147, 51, 234, 0.12); }
+    .cta { box-shadow: 0 0 30px rgba(236, 72, 153, 0.35); }
+    .bg-texture { background-image: radial-gradient(ellipse at top left, rgba(236,72,153,0.12), transparent 40%), radial-gradient(ellipse at bottom right, rgba(124,58,237,0.12), transparent 40%); background-size: 120% 120%, 120% 120%; background-repeat: no-repeat; }
+  .grid-overlay:before { content:""; position:absolute; inset:0; background-image: linear-gradient(transparent 95%, rgba(236,72,153,0.06) 96%), linear-gradient(90deg, transparent 95%, rgba(236,72,153,0.06) 96%); background-size: 40px 40px; pointer-events:none; opacity:0.35; }
+  </style>
+</head>
+<body class="bg-[#0b0716] text-gray-200 bg-texture" style="font-family:'Sora',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif">
+  <!-- Modal 18+ -->
+  <div id="AgeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+    <div class="w-full max-w-md mx-auto p-8 rounded-2xl border border-fuchsia-500/30 glass text-center">
+      <h2 class="text-3xl font-extrabold text-pink-400 mb-3">18+ Only</h2>
+      <p class="text-pink-200 mb-6">Please confirm you are 18 or older to continue.</p>
+      <button id="BtnConfirmAge" class="px-6 py-3 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-semibold transform transition hover:scale-105">Yes, I'm 18 or over</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section id="hero" class="relative h-[70vh] md:h-[85vh] overflow-hidden bg-black">
+    <video id="HeroVideo" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline preload="auto"></video>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-transparent"></div>
+    <!-- Hero content overlay -->
+    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
+      <div class="max-w-3xl">
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-[0_6px_30px_rgba(236,72,153,0.45)]">
+          The Naughty Show — The First Token-Powered Daily Stream on PumpFun
+        </h1>
+        <p class="mt-3 text-pink-100/90 md:text-lg">Join the show, fuel the token, grow the community.</p>
+        <div class="mt-3">
+          <span class="inline-block px-3 py-1 rounded-full bg-pink-600/80 text-white text-xs font-semibold shadow-[0_0_20px_rgba(236,72,153,0.45)]">SOON</span>
+        </div>
+        <div class="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="#howto" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold cta hover:scale-105 transition">Buy Token</a>
+          <a href="#community" class="px-5 py-2.5 rounded-full border border-pink-400/60 text-pink-100/90 hover:bg-white/5 transition">Join Community</a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute z-10 bottom-4 left-1/2 -translate-x-1/2 flex gap-3">
+      <button type="button" id="btnPrev" class="px-3 py-2 rounded-lg bg-black/50 border border-purple-700 text-pink-200 hover:bg-black/70">Prev</button>
+      <button type="button" id="btnNext" class="px-3 py-2 rounded-lg bg-black/50 border border-purple-700 text-pink-200 hover:bg-black/70">Next</button>
+      <button type="button" id="btnMute" class="px-3 py-2 rounded-lg bg-black/50 border border-purple-700 text-pink-200 hover:bg-black/70">Unmute</button>
+    </div>
+  </section>
+
+  <!-- Live Statistics -->
+  <section id="stats" class="relative py-16 px-4 bg-black overflow-hidden">
+    <div class="relative z-10 max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-pink-300 mb-8 text-center">Live Statistics</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="relative glass neon-b rounded-xl border p-6 text-center overflow-hidden">
+          <div class="text-sm text-pink-200/80">Price</div><div id="price" class="mt-2 text-xl font-bold text-pink-300">Coming Soon</div>
+        </div>
+        <div class="relative glass neon-b rounded-xl border p-6 text-center overflow-hidden">
+          <svg class="absolute -left-4 -top-2 w-14 h-14 opacity-25" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.4"><circle cx="12" cy="12" r="9"/></svg>
+          <div class="text-sm text-pink-200/80">Market Cap</div><div id="marketCap" class="mt-2 text-xl font-bold text-pink-300">Coming Soon</div>
+        </div>
+        <div class="relative glass neon-b rounded-xl border p-6 text-center overflow-hidden">
+          <svg class="absolute -left-4 -top-3 w-16 h-16 opacity-25" viewBox="0 0 24 24" fill="none" stroke="#ff3db7" stroke-width="1.4"><path d="M4 10h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8Z"/><path d="M7 10V6a5 5 0 0 1 10 0v4"/></svg>
+          <div class="text-sm text-pink-200/80">Total Liquidity</div><div id="totalLiquidity" class="mt-2 text-xl font-bold text-pink-300">Coming Soon</div>
+        </div>
+        <div class="relative glass neon-b rounded-xl border p-6 text-center overflow-hidden">
+          <svg class="absolute -left-2 -top-2 w-12 h-12 opacity-30" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.4"><path d="M3 10h18M7 6h10M6 14h12M8 18h8"/></svg>
+          <div class="text-sm text-pink-200/80">Trading Volume</div><div id="tradingVolume" class="mt-2 text-xl font-bold text-pink-300">Coming Soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="relative py-16 px-4 bg-[#0a0518] grid-overlay overflow-hidden">
+    <!-- Gallery background video -->
+    <video id="GalleryVideo" class="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-60" autoplay muted loop playsinline></video>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-transparent"></div>
+    <div class="relative z-10 max-w-6xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl md:text-4xl font-bold text-pink-300">Gallery</h2>
+        <p class="text-pink-200">All media are 18+, SFW only.</p>
+      </div>
+      <div id="galleryGrid" class="grid gap-6 md:grid-cols-3"></div>
+    </div>
+  </section>
+
+  <!-- How to Buy -->
+  <section id="howto" class="relative py-20 px-4 bg-black overflow-hidden">
+    <div class="relative z-10 max-w-7xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-pink-300">How to Buy $NAUGHTY</h2>
+      <p class="text-pink-200/80 mt-2 mb-10">Follow these simple steps to join the community.</p>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+        <!-- Step 1 -->
+        <div class="relative group rounded-2xl border border-purple-700/50 bg-black/40 backdrop-blur-md p-6 pt-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]">
+          <!-- corner step badge -->
+          <div class="absolute -top-4 left-6 w-9 h-9 rounded-full bg-pink-600 text-white font-bold text-sm grid place-items-center shadow-[0_6px_18px_rgba(236,72,153,0.35)]">1</div>
+          <!-- icon -->
+          <div class="mt-3 mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-600/20 to-purple-700/20 border border-fuchsia-500/30 text-pink-300">
+            <!-- wallet icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-6 h-6"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2H8a3 3 0 0 0-3 3v0a3 3 0 0 0 3 3h11v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M21 12h-4a2 2 0 1 0 0 4h4v-4Z"/></svg>
+          </div>
+          <h3 class="font-bold text-pink-300 mb-1">Create Wallet</h3>
+          <p class="text-pink-200/90">Download Phantom or another Solana wallet and back up your seed securely.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="relative group rounded-2xl border border-purple-700/50 bg-black/40 backdrop-blur-md p-6 pt-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]">
+          <div class="absolute -top-4 left-6 w-9 h-9 rounded-full bg-pink-600 text-white font-bold text-sm grid place-items-center shadow-[0_6px_18px_rgba(236,72,153,0.35)]">2</div>
+          <div class="mt-3 mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-600/20 to-purple-700/20 border border-fuchsia-500/30 text-pink-300">
+            <!-- coin icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-6 h-6"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9 10h6M9 14h6"/></svg>
+          </div>
+          <h3 class="font-bold text-pink-300 mb-1">Get SOL</h3>
+          <p class="text-pink-200/90">Purchase SOL on an exchange and transfer it to your wallet.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="relative group rounded-2xl border border-purple-700/50 bg-black/40 backdrop-blur-md p-6 pt-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]">
+          <div class="absolute -top-4 left-6 w-9 h-9 rounded-full bg-pink-600 text-white font-bold text-sm grid place-items-center shadow-[0_6px_18px_rgba(236,72,153,0.35)]">3</div>
+          <div class="mt-3 mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-600/20 to-purple-700/20 border border-fuchsia-500/30 text-pink-300">
+            <!-- swap icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-6 h-6"><path d="M16 3l4 4-4 4"/><path d="M20 7H10a4 4 0 0 0-4 4v0"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h10a4 4 0 0 0 4-4v0"/></svg>
+          </div>
+          <h3 class="font-bold text-pink-300 mb-1">Buy $NAUGHTY</h3>
+          <p class="text-pink-200/90">Swap SOL → $NAUGHTY using PumpFun or a supported DEX safely.</p>
+        </div>
+
+        <!-- Step 4 (optional but mejora estética como el ejemplo) -->
+        <div class="relative group rounded-2xl border border-purple-700/50 bg-black/40 backdrop-blur-md p-6 pt-7 text-left transition-all hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]">
+          <div class="absolute -top-4 left-6 w-9 h-9 rounded-full bg-pink-600 text-white font-bold text-sm grid place-items-center shadow-[0_6px_18px_rgba(236,72,153,0.35)]">4</div>
+          <div class="mt-3 mb-4 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-600/20 to-purple-700/20 border border-fuchsia-500/30 text-pink-300">
+            <!-- shield icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="w-6 h-6"><path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4Z"/><path d="M9.5 12.5l1.8 1.8L15 10.5"/></svg>
+          </div>
+          <h3 class="font-bold text-pink-300 mb-1">HODL Safely</h3>
+          <p class="text-pink-200/90">Store your $NAUGHTY securely in your wallet and beware of scammers.</p>
+        </div>
+      </div>
+
+      <a href="#" class="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white cta transform transition hover:scale-105">Buy $NAUGHTY</a>
+    </div>
+  </section>
+
+  <!-- About & Roadmap -->
+  <section id="about" class="relative py-20 px-4 bg-[#0a0518] overflow-hidden">
+    <!-- background video under flywheel -->
+    <video id="AboutVideo" class="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-50" autoplay muted loop playsinline></video>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-[#0a0518]/70"></div>
+    
+    <div class="relative z-10 max-w-5xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-pink-300 mb-6">About the Project</h2>
+      <p class="text-pink-200 max-w-2xl mx-auto mb-3">Daily hot‑tub style streams with rotating models and guests.</p>
+      <p class="text-pink-200 max-w-2xl mx-auto mb-3">Every show brings visibility and momentum to our token.</p>
+      <p class="text-pink-200 max-w-2xl mx-auto mb-6">Fees are reinvested to produce bigger shows and grow community.</p>
+
+      <!-- Flywheel image injected: uses same neon palette -->
+      <div class="relative w-full max-w-4xl mx-auto">
+        <img id="FlywheelImg" src="/public/naughty-flywheel.png" alt="Naughty Flywheel" class="mx-auto w-full h-auto object-contain drop-shadow-[0_0_30px_rgba(236,72,153,0.35)]" />
+      </div>
+
+      <p class="text-pink-200/80 max-w-2xl mx-auto mt-4 text-sm">This cycle shows how revenue and visibility are reinvested into new shows to expand the community.</p>
+    </div>
+  </section>
+
+  
+
+  <!-- Footer -->
+  <footer id="community" class="py-8 px-4 bg-black/95 border-t border-purple-900/40 text-center">
+    <p class="text-[12px] text-pink-200/80">Entertainment only. No explicit adult content.</p>
+    <div class="mt-2 flex justify-center items-center gap-3 text-[13px] text-pink-300/90">
+      <a href="#howto" class="hover:text-pink-400">Buy Token</a>
+      <span class="text-pink-500/40">•</span>
+      <a href="#community" class="hover:text-pink-400">Community</a>
+    </div>
+    <p class="mt-2 text-[12px] text-pink-200/70">© The Naughty Show 2025.</p>
+  </footer>
+
+  <script>
+    // Preferred hero video index for background sections (change here)
+    const PREFERRED_HERO = 7; // e.g., will try videos/hero7.mp4 first
+    // 18+ modal
+    document.getElementById('BtnConfirmAge').addEventListener('click', ()=>{
+      document.getElementById('AgeModal').style.display = 'none';
+    });
+
+    // Hero video rotation (static environment)
+    (function(){
+      const video = document.getElementById('HeroVideo');
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+  const btnMute = document.getElementById('btnMute');
+
+      function fadeSwap(setter){
+        video.style.transition = 'opacity 400ms ease';
+        video.style.opacity = '0';
+        setTimeout(()=>{ setter(); video.load(); video.play().catch(()=>{}); video.style.opacity = '1'; }, 400);
+      }
+
+      let available = [];
+      let current = -1;
+      const probes = [];
+      for (let i=11;i>=1;i--) probes.push(fetch(`videos/hero${i}.mp4`, {method:'HEAD'}).then(r=>r.ok?i:null).catch(()=>null));
+      Promise.all(probes).then(async (list)=>{
+        available = list.filter(Boolean).sort((a,b)=>a-b);
+        if (!available.length) return;
+        // Measure resolution and file size (bitrate proxy)
+        async function measureResolution(i){
+          return new Promise((resolve)=>{
+            const v = document.createElement('video');
+            v.preload = 'metadata';
+            v.src = `videos/hero${i}.mp4`;
+            v.addEventListener('loadedmetadata', ()=>{
+              const px = (v.videoWidth||0)*(v.videoHeight||0);
+              resolve({i, px});
+            }, {once:true});
+            v.addEventListener('error', ()=> resolve({i, px:0}), {once:true});
+          });
+        }
+        async function headLen(i){
+          try{
+            const r = await fetch(`videos/hero${i}.mp4`, {method:'HEAD'});
+            const len = parseInt(r.headers.get('content-length')||'0',10);
+            return {i, len: isNaN(len)?0:len};
+          }catch{ return {i, len:0}; }
+        }
+        const [measures, sizes] = await Promise.all([
+          Promise.all(available.map(measureResolution)),
+          Promise.all(available.map(headLen))
+        ]);
+        const sizeMap = new Map(sizes.map(s=>[s.i, s.len]));
+        measures.sort((a,b)=> (b.px - a.px) || ((sizeMap.get(b.i)||0) - (sizeMap.get(a.i)||0)) || (b.i - a.i));
+        current = (measures[0] && measures[0].px>0) ? measures[0].i : available[available.length-1];
+        setHero(current);
+      });
+
+      function setHero(i){
+        current = i;
+        fadeSwap(()=>{
+          try { video.pause(); } catch(_){}
+          video.removeAttribute('src');
+          while (video.firstChild) video.removeChild(video.firstChild);
+          video.src = `videos/hero${current}.mp4`;
+        });
+      }
+      function nextHero(){ if(!available.length) return; const idx = available.indexOf(current); setHero(available[(idx+1)%available.length]); }
+      function prevHero(){ if(!available.length) return; const idx = available.indexOf(current); setHero(available[(idx-1+available.length)%available.length]); }
+
+      btnNext.addEventListener('click', nextHero);
+      btnPrev.addEventListener('click', prevHero);
+      btnMute.addEventListener('click', ()=>{ video.muted = !video.muted; btnMute.textContent = video.muted ? 'Unmute' : 'Mute'; });
+
+    })();
+
+    // Gallery population (photo2..photo11 .jpeg or .jpg)
+    (function(){
+      const grid = document.getElementById('galleryGrid');
+      const tasks = [];
+      function head(url){ return fetch(url, {method:'HEAD'}).then(r=>r.ok?url:null).catch(()=>null); }
+      for (let i=2;i<=11;i++){
+        tasks.push(
+          Promise.all([
+            head(`images/photo${i}.jpeg`),
+            head(`images/photo${i}.jpg`)
+          ]).then(([jpeg,jpg])=> jpeg||jpg )
+        );
+      }
+      Promise.all(tasks).then(urls=>{
+        const seen = new Set();
+        urls.filter(Boolean).forEach(src=>{
+          if (seen.has(src)) return; seen.add(src);
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = 'Gallery';
+          img.loading = 'lazy';
+          img.className = 'w-full h-64 object-cover rounded-xl border border-purple-700/60 hover:scale-105 transition transform';
+          grid.appendChild(img);
+        });
+      });
+    })();
+
+    // Flywheel image fallback: prefer aspnet/images, else try /naughty-flywheel.png under site/public when served differently
+    (function(){
+      const el = document.getElementById('FlywheelImg');
+      if(!el) return;
+      const candidates = [
+        'images/naughty-flywheel.png',
+        '../public/naughty-flywheel.png',
+        '/naughty-flywheel.png',
+        '/public/naughty-flywheel.png'
+      ];
+      (async ()=>{
+        for (const url of candidates){
+          try{ const r = await fetch(url, {method:'HEAD'}); if(r.ok){ el.src = url; return; } }catch(e){}
+        }
+      })();
+    })();
+
+    // About background video: pick highest resolution hero*.mp4
+    (function(){
+      const video = document.getElementById('AboutVideo');
+      if(!video) return;
+      const probes = [];
+      for (let i=11;i>=1;i--) probes.push(fetch(`videos/hero${i}.mp4`, {method:'HEAD'}).then(r=>r.ok?i:null).catch(()=>null));
+      Promise.all(probes).then(async (list)=>{
+        const available = list.filter(Boolean).sort((a,b)=>a-b);
+        if (!available.length) return;
+        // Prefer fixed hero if available
+        if (available.includes(PREFERRED_HERO)){
+          try{ video.pause(); }catch(_){ }
+          video.removeAttribute('src');
+          while (video.firstChild) video.removeChild(video.firstChild);
+          video.src = `videos/hero${PREFERRED_HERO}.mp4`;
+          try{ video.play(); }catch(_){ }
+          return;
+        }
+        function measureResolution(i){
+          return new Promise((resolve)=>{
+            const v = document.createElement('video');
+            v.preload = 'metadata';
+            v.src = `videos/hero${i}.mp4`;
+            v.addEventListener('loadedmetadata', ()=>{
+              const px = (v.videoWidth||0)*(v.videoHeight||0);
+              resolve({i, px});
+            }, {once:true});
+            v.addEventListener('error', ()=> resolve({i, px:0}), {once:true});
+          });
+        }
+        async function headLen(i){
+          try{ const r = await fetch(`videos/hero${i}.mp4`, {method:'HEAD'}); const len = parseInt(r.headers.get('content-length')||'0',10); return {i, len:isNaN(len)?0:len}; }
+          catch{ return {i, len:0}; }
+        }
+        const [measures, sizes] = await Promise.all([
+          Promise.all(available.map(measureResolution)),
+          Promise.all(available.map(headLen))
+        ]);
+        const sizeMap = new Map(sizes.map(s=>[s.i, s.len]));
+        measures.sort((a,b)=> (b.px - a.px) || ((sizeMap.get(b.i)||0) - (sizeMap.get(a.i)||0)) || (b.i - a.i));
+        const idx = (measures[0] && measures[0].px>0) ? measures[0].i : available[available.length-1];
+        try{ video.pause(); }catch(_){ }
+        video.removeAttribute('src');
+        while (video.firstChild) video.removeChild(video.firstChild);
+        video.src = `videos/hero${idx}.mp4`;
+        try{ video.play(); }catch(_){ }
+      });
+    })();
+
+    // Gallery background video: pick highest resolution hero*.mp4
+    (function(){
+      const video = document.getElementById('GalleryVideo');
+      if(!video) return;
+      const probes = [];
+      for (let i=11;i>=1;i--) probes.push(fetch(`videos/hero${i}.mp4`, {method:'HEAD'}).then(r=>r.ok?i:null).catch(()=>null));
+      Promise.all(probes).then(async (list)=>{
+        const available = list.filter(Boolean).sort((a,b)=>a-b);
+        if (!available.length) return;
+        // Prefer fixed hero if available
+        if (available.includes(PREFERRED_HERO)){
+          try{ video.pause(); }catch(_){ }
+          video.removeAttribute('src');
+          while (video.firstChild) video.removeChild(video.firstChild);
+          video.src = `videos/hero${PREFERRED_HERO}.mp4`;
+          try{ video.play(); }catch(_){ }
+          return;
+        }
+        function measureResolution(i){
+          return new Promise((resolve)=>{
+            const v = document.createElement('video');
+            v.preload = 'metadata';
+            v.src = `videos/hero${i}.mp4`;
+            v.addEventListener('loadedmetadata', ()=>{
+              const px = (v.videoWidth||0)*(v.videoHeight||0);
+              resolve({i, px});
+            }, {once:true});
+            v.addEventListener('error', ()=> resolve({i, px:0}), {once:true});
+          });
+        }
+        async function headLen(i){
+          try{ const r = await fetch(`videos/hero${i}.mp4`, {method:'HEAD'}); const len = parseInt(r.headers.get('content-length')||'0',10); return {i, len:isNaN(len)?0:len}; }
+          catch{ return {i, len:0}; }
+        }
+        const [measures, sizes] = await Promise.all([
+          Promise.all(available.map(measureResolution)),
+          Promise.all(available.map(headLen))
+        ]);
+        const sizeMap = new Map(sizes.map(s=>[s.i, s.len]));
+        measures.sort((a,b)=> (b.px - a.px) || ((sizeMap.get(b.i)||0) - (sizeMap.get(a.i)||0)) || (b.i - a.i));
+        const idx = (measures[0] && measures[0].px>0) ? measures[0].i : available[available.length-1];
+        try{ video.pause(); }catch(_){ }
+        video.removeAttribute('src');
+        while (video.firstChild) video.removeChild(video.firstChild);
+        video.src = `videos/hero${idx}.mp4`;
+        try{ video.play(); }catch(_){ }
+      });
+    })();
+    
+  </script>
+</body>
 </html>
